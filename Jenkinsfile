@@ -1,12 +1,10 @@
 pipeline {
     agent any
 
-   
-   environment {
+    environment {
         PATH = "$PATH:/usr/local/bin"
     }
 
-    
     stages {
         stage('Checkout') {
             steps {
@@ -17,21 +15,19 @@ pipeline {
         stage('Prepare Database') {
             steps {
                 // Migrate the database schema to the latest version
-                bat 'php bin/console doctrine:migrations:migrate --env=test --no-interaction'
+                sh 'php bin/console doctrine:migrations:migrate --env=test --no-interaction'
             }
         }
         
         stage('Install dependencies') {
-                steps {
-                    // Utilisez la commande "bat" pour Windows
-                    bat 'composer install'
-                }
+            steps {
+                sh 'composer install'
             }
+        }
 
         stage('Run tests') {
             steps {
-                // Utilisez la commande "bat" pour Windows
-                bat 'php bin/phpunit --log-junit tests/report.xml'
+                sh 'php bin/phpunit --log-junit tests/report.xml'
             }
         }
     }
